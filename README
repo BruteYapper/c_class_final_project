@@ -1,0 +1,23 @@
+Connor Meyer
+
+Purpose
+to simulate the escape of our two heros
+
+source files:
+connect.c 
+escape.c 
+flyer.c 
+hero.c 
+main.c 
+spectator.c 
+
+defs.h 
+
+compilation and launching instructions:
+    to compile:
+	make
+
+    to run:
+	run "./a5" in one terminal and "./a5 (ip address)" to run
+	the ip address is tipically 127.0.0.1
+
