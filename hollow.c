@@ -125,7 +125,9 @@ void outputHollow(EscapeType *game){
 
     free(hollowString);
 }
-
+/* purpose: to act as a wrapper function for outputHollow so the original functions doesn't need to be modified
+ * in: game object
+ * */
 void *outputWrapper(void *game){
     extern sem_t mutex;
     sem_wait(&mutex);
