@@ -19,8 +19,6 @@ void runEscape(){
     }
     pthread_create(&outputThread, NULL, outputWrapper, game);
     usleep(OUTPUT_INTERVAL+5); // to make sure the output is run before the while loop is
-    //TODO: put a semiphore around most of the while loop
-    //TODO: make outputHollow the threaded function
 
     initEscape(game);
 
@@ -54,7 +52,6 @@ void runEscape(){
     }
 
     sendData(game->viewSocket, "quit");
-    //TODO: join the thread here
     pthread_join(outputThread, NULL);
 
     handleEscapeResult(game);
