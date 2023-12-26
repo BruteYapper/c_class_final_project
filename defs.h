@@ -140,6 +140,9 @@ HeroType* checkForCollision(PositionType*, EscapeType*); // done
    to client */
 void outputHollow(EscapeType*); // done
 
+/* function ment to call outputHollow in a thread so outputHollow does not have to be changed */
+void *outputWrapper(void*);
+
 /* initializes 2D grid with participant avatars in current positions */
 void initHollow(EscapeType*, char[][MAX_COL]); // done
 

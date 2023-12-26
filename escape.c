@@ -1,20 +1,33 @@
 #include "defs.h"
+#include <pthread.h>
+#include <semaphore.h>
 
-
+sem_t mutex;
 /* 
   Purpose:  Runs the server version of the application
 */
 void runEscape(){
-    
+
+
+    pthread_t outputThread;
     EscapeType *game;
     game = malloc(sizeof(EscapeType));
 
-    //EscapeType game;
+    if(sem_init(&mutex, 0, 1) < 0){
+	perror("Semaphore initilalization failed");
+	exit(-1);
+    }
+    pthread_create(&outputThread, NULL, outputWrapper, game);
+    usleep(OUTPUT_INTERVAL+5); // to make sure the output is run before the while loop is
+    //TODO: put a semiphore around most of the while loop
+    //TODO: make outputHollow the threaded function
 
     initEscape(game);
 
+    
+    
     while(!escapeIsOver(game)){
-	outputHollow(game);
+	sem_wait(&mutex);
 	// move heros
 	for (int i = 0; i < game->heroes.size; i++) {
 	    moveHero(game->heroes.elements[i], game);
@@ -24,9 +37,9 @@ void runEscape(){
 	spawnBird = randomInt(100)+1;
 	spawnMonkey = randomInt(100)+1;
 	// spawn more bad guys
-	if(spawnBird < 81)
+	if(spawnBird <= BIRD_SPAWN_RATE)
 	    spawnFlyer(game, 'v', randomInt(3)+3, randomInt(MAX_COL), randomInt(5));
-	if(spawnMonkey < 41)
+	if(spawnMonkey <= MONKEY_SPAWN_RATE)
 	    spawnFlyer(game, '@', randomInt(4)+8, randomInt(MAX_COL), randomInt(15));
 
 	
@@ -35,12 +48,15 @@ void runEscape(){
 	for (int i = 0; i < game->flyers.size; i++) {
 	    moveFlyer(game->flyers.elements[i], game);
 	}
+	sem_post(&mutex);
 
 	usleep(100000);
     }
 
-    
     sendData(game->viewSocket, "quit");
+    //TODO: join the thread here
+    pthread_join(outputThread, NULL);
+
     handleEscapeResult(game);
 }
 

@@ -13,10 +13,13 @@ void viewEscape(char *ip){
 	char buff[MAX_BUFF];
     while(1){
 
-	rcvData(connectedClient, buff);
-
 	if(strcmp(buff, "quit") == 0)
 	    break;
+	rcvData(connectedClient, buff);
+
+	if(strcmp(buff, "quit") == 0){
+	    break;
+	}
 	printf("%s\n", buff);
     }
 

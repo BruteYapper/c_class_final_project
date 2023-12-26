@@ -1,5 +1,6 @@
 #include "defs.h"
 
+
 /* 
   purpose: initlize the hollow
 in: gives all data needed to fill hollow
@@ -123,6 +124,20 @@ void outputHollow(EscapeType *game){
     sendData(game->viewSocket, hollowString);
 
     free(hollowString);
+}
+
+void *outputWrapper(void *game){
+    extern sem_t mutex;
+    sem_wait(&mutex);
+    do {
+	sem_post(&mutex); // the reason for the post and wait to be like this is because game needs to be locked while escapeIsOver runs
+	usleep(OUTPUT_INTERVAL);
+	sem_wait(&mutex);
+	outputHollow(game);
+
+    } while (!escapeIsOver(game));
+    sem_post(&mutex);
+    return(0);
 }
 
 
